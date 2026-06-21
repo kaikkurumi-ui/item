@@ -1,0 +1,3 @@
+com\baidu\item\module\entity\Item.class
+com\baidu\item\module\service\ItemService.class
+com\baidu\item\module\mapper\ItemMapper.class

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baidu.item.module.mapper.ItemMapper">
+
+    <insert id="createItem" parameterType="com.baidu.item.module.entity.Item">
+        insert into item(item_images,title,price,description,create_time,update_time,is_deleted)
+        values(#{itemImages},#{title},#{price},#{description},#{createTime},#{updateTime},#{isDeleted})
+    </insert>
+    <update id="updateItem" parameterType="com.baidu.item.module.entity.Item">
+        update item
+        <set>
+            <if test="itemImages != null and itemImages != ''">
+                item_images = #{itemImages},
+            </if>
+            <if test="title != null and title != ''">
+                title = #{title},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

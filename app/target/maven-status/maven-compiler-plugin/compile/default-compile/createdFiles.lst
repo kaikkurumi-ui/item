@@ -1,0 +1,5 @@
+com\baidu\item\app\ItemAppApplication.class
+com\baidu\item\app\controller\ItemController.class
+com\baidu\item\app\domain\ItemListVo.class
+com\baidu\item\app\domain\ItemDetailInfoVo.class
+com\baidu\item\app\domain\ItemInfoVo.class

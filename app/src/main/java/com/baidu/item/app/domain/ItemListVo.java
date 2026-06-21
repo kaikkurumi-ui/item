@@ -1,0 +1,13 @@
+package com.baidu.item.app.domain;
+
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.util.List;
+
+@Data
+@Accessors(chain = true)
+public class ItemListVo {
+    List<ItemInfoVo> list;
+}
