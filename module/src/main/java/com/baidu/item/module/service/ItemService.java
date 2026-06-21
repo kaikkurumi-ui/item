@@ -23,7 +23,7 @@ public class ItemService {
         return itemMapper.getItemInfo(itemId);
     }
 
-    public Boolean create(String itemImages, String title, Float price, String description) {
+    public String create(String itemImages, String title, Float price, String description) {
         Item item = new Item();
         item.setItemImages(itemImages)
             .setTitle(title)
@@ -32,10 +32,10 @@ public class ItemService {
             .setCreateTime(System.currentTimeMillis() / 1000)
             .setUpdateTime(Instant.now().getEpochSecond())
             .setIsDeleted(0);
-            return itemMapper.createItem(item) > 0;
+            return itemMapper.createItem(item) > 0 ? "成功" : "失败";
     }
 
-    public Boolean update(Long itemId, String itemImages, String title, Float price, String description) {
+    public String update(Long itemId, String itemImages, String title, Float price, String description) {
         Item item = new Item();
         item.setId(itemId)
             .setItemImages(itemImages)
@@ -43,10 +43,10 @@ public class ItemService {
             .setPrice(price)
             .setDescription(description)
             .setUpdateTime(Instant.now().getEpochSecond());
-            return itemMapper.updateItem(item) > 0;
+            return itemMapper.updateItem(item) > 0 ? "成功" : "失败";
     }
 
-    public Boolean delete(Long itemId) {
-        return itemMapper.deleteItem(itemId) > 0;
+    public String delete(Long itemId) {
+        return itemMapper.deleteItem(itemId) > 0 ? "成功" : "失败";
     }
 }

@@ -16,7 +16,7 @@ public class ItemController {
     private ItemService itemService;
 
     @RequestMapping("/create")
-    public Boolean create(@RequestParam("itemImages") String itemImages,
+    public String create(@RequestParam("itemImages") String itemImages,
                          @RequestParam("title") String title,
                          @RequestParam("price") Float price,
                          @RequestParam("description") String description){
@@ -25,7 +25,7 @@ public class ItemController {
     }
 
     @RequestMapping("/update")
-    public Boolean update(@RequestParam("itemId") Long itemId,
+    public String update(@RequestParam("itemId") Long itemId,
                           @RequestParam("itemImages") String itemImages,
                           @RequestParam("title") String title,
                           @RequestParam("price") Float price,
@@ -35,7 +35,7 @@ public class ItemController {
     }
 
     @RequestMapping("/delete")
-    public Boolean delete(@RequestParam("itemId") Long itemId){
+    public String delete(@RequestParam("itemId") Long itemId){
         log.info("删除商品,itemId:{}", itemId);
         return itemService.delete(itemId);
     }
