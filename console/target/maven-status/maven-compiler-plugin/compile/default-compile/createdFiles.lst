@@ -1,2 +1,2 @@
-com\baidu\item\console\controller\ItemController.class
-com\baidu\item\console\ItemConsoleApplication.class
+com\aisia\item\console\ItemConsoleApplication.class
+com\aisia\item\console\controller\ItemController.class
