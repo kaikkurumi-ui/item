@@ -29,9 +29,11 @@ public class ItemService {
             .setPrice(price)
             .setDescription(description)
             .setCreateTime(System.currentTimeMillis() / 1000)
-            .setUpdateTime(Instant.now().getEpochSecond())
+            //.setUpdateTime(Instant.now().getEpochSecond())
             .setIsDeleted(0);
-            return itemMapper.createItem(item) > 0 ? "成功" : "失败";
+        int incrementId = itemMapper.createItem(item);
+        Long id = item.getId();
+        return incrementId > 0 ? "自增id:" + id: "失败";
     }
 
     public String update(Long itemId, String itemImages, String title, Float price, String description) {
@@ -40,9 +42,9 @@ public class ItemService {
             .setItemImages(itemImages)
             .setTitle(title)
             .setPrice(price)
-            .setDescription(description)
-            .setUpdateTime(Instant.now().getEpochSecond());
-            return itemMapper.updateItem(item) > 0 ? "成功" : "失败";
+            .setDescription(description);
+            //.setUpdateTime(Instant.now().getEpochSecond());
+        return itemMapper.updateItem(item) > 0 ? "成功" : "失败";
     }
 
     public String delete(Long itemId) {

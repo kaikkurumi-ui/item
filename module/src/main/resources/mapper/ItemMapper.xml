@@ -4,9 +4,23 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.aisia.item.module.mapper.ItemMapper">
 
-    <insert id="createItem" parameterType="com.aisia.item.module.entity.Item">
-        insert into item(item_images,title,price,description,create_time,update_time,is_deleted)
-        values(#{itemImages},#{title},#{price},#{description},#{createTime},#{updateTime},#{isDeleted})
+    <insert id="createItem" parameterType="com.aisia.item.module.entity.Item" useGeneratedKeys="true" keyProperty="id">
+        insert into item(
+        <if test="itemImages != null and itemImages != ''">item_images,</if>
+        <if test="title != null and title != ''">title,</if>
+        <if test="price != null">price,</if>
+        <if test="description != null and description != ''">description,</if>
+        <if test="createTime != null">create_time,</if>
+        <if test="updateTime != null">update_time,</if>
+        is_deleted)
+        values(
+        <if test="itemImages != null and itemImages != ''">#{itemImages},</if>
+        <if test="title != null and title != ''">#{title},</if>
+        <if test="price != null">#{price},</if>
+        <if test="description != null and description != ''">#{description},</if>
+        <if test="createTime != null">#{createTime},</if>
+        <if test="updateTime != null">#{updateTime},</if>
+        #{isDeleted})
     </insert>
     <update id="updateItem" parameterType="com.aisia.item.module.entity.Item">
         update item

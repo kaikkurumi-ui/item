@@ -19,23 +19,23 @@ public class ItemController {
     public String create(@RequestParam("itemImages") String itemImages,
                          @RequestParam("title") String title,
                          @RequestParam("price") Float price,
-                         @RequestParam("description") String description){
+                         @RequestParam("description") String description) {
         log.info("创建商品,itemImages:{},title:{},price:{},description:{}", itemImages, title, price, description);
         return itemService.create(itemImages, title, price, description);
     }
 
     @RequestMapping("/update")
     public String update(@RequestParam("itemId") Long itemId,
-                          @RequestParam("itemImages") String itemImages,
-                          @RequestParam("title") String title,
-                          @RequestParam("price") Float price,
-                          @RequestParam("description") String description){
+                         @RequestParam("itemImages") String itemImages,
+                         @RequestParam("title") String title,
+                         @RequestParam("price") Float price,
+                         @RequestParam("description") String description) {
         log.info("更新商品信息,itemId:{},itemImages:{},title:{},price:{},description:{}", itemId, itemImages, title, price, description);
         return itemService.update(itemId, itemImages, title, price, description);
     }
 
     @RequestMapping("/delete")
-    public String delete(@RequestParam("itemId") Long itemId){
+    public String delete(@RequestParam("itemId") Long itemId) {
         log.info("删除商品,itemId:{}", itemId);
         return itemService.delete(itemId);
     }

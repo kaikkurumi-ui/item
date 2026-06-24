@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -46,8 +47,9 @@ public class Item {
 
     /**
      * 更新时间（Unix时间戳，秒）
+     * 在对象创建时设置默认值
      */
-    private Long updateTime;
+    private Long updateTime = Instant.now().getEpochSecond();
 
     /**
      * 是否删除（0-未删除，1-已删除）
