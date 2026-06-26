@@ -9,4 +9,5 @@ import java.util.List;
 @Accessors(chain = true)
 public class ItemListVo {
     List<ItemInfoVo> list;
+    Boolean isEnd;
 }

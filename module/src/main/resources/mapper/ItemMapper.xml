@@ -46,4 +46,11 @@
         </set>
         where id = #{id}
     </update>
+    <select id="getItemListByPage" resultType="com.aisia.item.module.entity.Item">
+        select *
+        from item
+        where is_deleted != 1
+        order by id
+            limit #{offset}, #{pageSize}
+    </select>
 </mapper>

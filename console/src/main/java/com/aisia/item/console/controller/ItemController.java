@@ -1,11 +1,24 @@
 package com.aisia.item.console.controller;
 
+import com.aisia.item.console.domain.ItemDetailInfoVo;
+import com.aisia.item.console.domain.ItemInfoVo;
+import com.aisia.item.console.domain.ItemListVo;
+import com.aisia.item.module.entity.Item;
 import com.aisia.item.module.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/item")
@@ -38,5 +51,56 @@ public class ItemController {
     public String delete(@RequestParam("itemId") Long itemId) {
         log.info("删除商品,itemId:{}", itemId);
         return itemService.delete(itemId);
+    }
+
+    @RequestMapping("/list")
+    public ItemListVo list(@RequestParam("page") Integer page){
+        log.info("console端获取商品列表,页码:{}",page);
+        // 指定分页大小
+        Integer pageSize = 5;
+        List<Item> items = itemService.getByPage(page,pageSize); //查询数据
+        Long total = itemService.getTotal(); //总页数
+        List<ItemInfoVo> infoVoList = new ArrayList<>(items.size());
+        for (Item item : items) {
+            ItemInfoVo itemInfoVo = ItemInfoVo.builder()
+                    .itemImage(item.getItemImages().split("\\$")[0])
+                    .price(item.getPrice())
+                    .title(item.getTitle())
+                    .build();
+            infoVoList.add(itemInfoVo);
+        }
+        ItemListVo itemListVo = new ItemListVo();
+        itemListVo.setList(infoVoList);
+        itemListVo.setPageSize(pageSize);
+        itemListVo.setTotal(total);
+        return itemListVo;
+    }
+
+    @RequestMapping("/info")
+    public ItemDetailInfoVo info(@RequestParam("itemId") Long itemId){
+        log.info("console端根据商品id获取商品详情:{}",itemId);
+        Item item = itemService.getInfo(itemId);
+        ItemDetailInfoVo itemDetailInfoVo = new ItemDetailInfoVo();
+        itemDetailInfoVo.setItemImages(Arrays.asList(item.getItemImages().split("\\$")));
+        itemDetailInfoVo.setDescription(item.getDescription());
+        itemDetailInfoVo.setTitle(item.getTitle());
+        itemDetailInfoVo.setPrice(item.getPrice());
+        // 将时间戳转换为指定日期格式
+        itemDetailInfoVo.setCreateTime(formatTime(item.getCreateTime()));
+        itemDetailInfoVo.setUpdateTime(formatTime(item.getUpdateTime()));
+        return itemDetailInfoVo;
+    }
+
+    private String formatTime(Long timestamp) {
+        // 将时间戳转换为Instant,数据库存储是时间戳单位是秒,使用ofEpochSecond转换
+        Instant instant = Instant.ofEpochSecond(timestamp);
+
+        // 使用DateTimeFormatter定义你想要的日期时间格式
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // 格式化Instant到具体的日期时间字符串
+        String formattedDateTime = instant.atZone(ZoneId.systemDefault()).format(formatter);
+
+        return formattedDateTime.format(formattedDateTime);
     }
 }

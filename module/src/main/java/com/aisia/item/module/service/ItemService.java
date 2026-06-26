@@ -50,4 +50,13 @@ public class ItemService {
     public String delete(Long itemId) {
         return itemMapper.deleteItem(itemId) > 0 ? "成功" : "失败";
     }
+
+    public List<Item> getByPage(Integer page,Integer pageSize) {
+        Integer offset = (page -1) * pageSize;
+        return itemMapper.getItemListByPage(offset,pageSize);
+    }
+
+    public Long getTotal() {
+        return itemMapper.getTotal();
+    }
 }

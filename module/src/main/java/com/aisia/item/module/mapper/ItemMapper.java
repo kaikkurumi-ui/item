@@ -20,4 +20,9 @@ public interface ItemMapper {
 
     @Update("UPDATE item SET is_deleted = 1 WHERE id = #{itemId} AND is_deleted = 0")
     int deleteItem(@Param("itemId") Long itemId);
+
+    List<Item> getItemListByPage(@Param("offset") Integer offset,@Param("pageSize") Integer pageSize);
+
+    @Select("select count(*) from item where item.item.is_deleted != 1")
+    Long getTotal();
 }

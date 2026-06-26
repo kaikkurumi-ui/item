@@ -4,6 +4,7 @@ import com.aisia.item.app.domain.ItemDetailInfoVo;
 import com.aisia.item.app.domain.ItemInfoVo;
 import com.aisia.item.app.domain.ItemListVo;
 import com.aisia.item.module.entity.Item;
+import com.aisia.item.module.mapper.ItemMapper;
 import com.aisia.item.module.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,27 +24,36 @@ public class ItemController {
 
     @Autowired
     private ItemService itemService;
+    @Autowired
+    private ItemMapper itemMapper;
 
     @GetMapping("/list")
-    public ItemListVo list(){
-        log.info("查询商品列表");
-        List<Item> items = itemService.getAll();
+    public ItemListVo list(@RequestParam("page") Integer page){
+        log.info("查询商品列表,第{}页",page);
+        Integer pageSize = 5;
+        List<Item> items = itemService.getByPage(page,pageSize);
+        Boolean isEnd = false;
+        // 通过判断查询的商品集合大小，和每页大小做对比
+        if (items.size() != pageSize) {
+            isEnd = true;
+        }
         List<ItemInfoVo> list = new ArrayList<>(items.size());
         for (Item item : items) {
             ItemInfoVo itemInfoVo = new ItemInfoVo();
-            itemInfoVo.setItemImage(item.getItemImages())
+            itemInfoVo.setItemImage(item.getItemImages().split("\\$")[0])
                     .setPrice(item.getPrice())
                     .setTitle(item.getTitle());
             list.add(itemInfoVo);
         }
         ItemListVo itemListVo = new ItemListVo();
         itemListVo.setList(list);
+        itemListVo.setIsEnd(isEnd);
         return itemListVo;
     }
 
     @GetMapping("/info")
     public ItemDetailInfoVo info(@RequestParam("itemId") Long itemId){
-        log.info("查询商品详情:{}",itemId);
+        log.info("查询商品id详情:{}",itemId);
         Item item = itemService.getInfo(itemId);
         ItemDetailInfoVo itemDetailInfoVo = new ItemDetailInfoVo();
 
