@@ -24,19 +24,14 @@ public class ItemController {
 
     @Autowired
     private ItemService itemService;
-    @Autowired
-    private ItemMapper itemMapper;
 
     @GetMapping("/list")
     public ItemListVo list(@RequestParam("page") Integer page){
         log.info("查询商品列表,第{}页",page);
         Integer pageSize = 5;
         List<Item> items = itemService.getByPage(page,pageSize);
-        Boolean isEnd = false;
         // 通过判断查询的商品集合大小，和每页大小做对比
-        if (items.size() != pageSize) {
-            isEnd = true;
-        }
+        Boolean isEnd = items.size() < pageSize;
         List<ItemInfoVo> list = new ArrayList<>(items.size());
         for (Item item : items) {
             ItemInfoVo itemInfoVo = new ItemInfoVo();
