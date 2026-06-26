@@ -3,6 +3,7 @@ package com.aisia.item.console.controller;
 import com.aisia.item.console.domain.ItemDetailInfoVo;
 import com.aisia.item.console.domain.ItemInfoVo;
 import com.aisia.item.console.domain.ItemListVo;
+import com.aisia.item.console.utils.DateTimeUtil;
 import com.aisia.item.module.entity.Item;
 import com.aisia.item.module.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,13 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -77,8 +73,8 @@ public class ItemController {
     }
 
     @RequestMapping("/info")
-    public ItemDetailInfoVo info(@RequestParam("itemId") Long itemId){
-        log.info("console端根据商品id获取商品详情:{}",itemId);
+    public ItemDetailInfoVo info(@RequestParam("itemId") Long itemId) {
+        log.info("console端根据商品id获取商品详情:{}", itemId);
         Item item = itemService.getInfo(itemId);
         ItemDetailInfoVo itemDetailInfoVo = new ItemDetailInfoVo();
         itemDetailInfoVo.setItemImages(Arrays.asList(item.getItemImages().split("\\$")));
@@ -86,21 +82,8 @@ public class ItemController {
         itemDetailInfoVo.setTitle(item.getTitle());
         itemDetailInfoVo.setPrice(item.getPrice());
         // 将时间戳转换为指定日期格式
-        itemDetailInfoVo.setCreateTime(formatTime(item.getCreateTime()));
-        itemDetailInfoVo.setUpdateTime(formatTime(item.getUpdateTime()));
+        itemDetailInfoVo.setCreateTime(DateTimeUtil.formatTime(item.getCreateTime()));
+        itemDetailInfoVo.setUpdateTime(DateTimeUtil.formatTime(item.getUpdateTime()));
         return itemDetailInfoVo;
-    }
-
-    private String formatTime(Long timestamp) {
-        // 将时间戳转换为Instant,数据库存储是时间戳单位是秒,使用ofEpochSecond转换
-        Instant instant = Instant.ofEpochSecond(timestamp);
-
-        // 使用DateTimeFormatter定义你想要的日期时间格式
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-        // 格式化Instant到具体的日期时间字符串
-        String formattedDateTime = instant.atZone(ZoneId.systemDefault()).format(formatter);
-
-        return formattedDateTime.format(formattedDateTime);
     }
 }
