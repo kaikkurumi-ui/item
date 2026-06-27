@@ -1,5 +1,6 @@
 package com.aisia.item.app.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

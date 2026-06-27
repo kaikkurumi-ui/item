@@ -1,5 +1,6 @@
 package com.aisia.item.console.controller;
 
+import com.aisia.item.console.domain.ItemDTO;
 import com.aisia.item.console.domain.ItemDetailInfoVo;
 import com.aisia.item.console.domain.ItemInfoVo;
 import com.aisia.item.console.domain.ItemListVo;
@@ -8,9 +9,7 @@ import com.aisia.item.module.entity.Item;
 import com.aisia.item.module.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,13 +23,19 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
-    @RequestMapping("/create")
-    public String create(@RequestParam("itemImages") String itemImages,
-                         @RequestParam("title") String title,
-                         @RequestParam("price") Float price,
-                         @RequestParam("description") String description) {
-        log.info("创建商品,itemImages:{},title:{},price:{},description:{}", itemImages, title, price, description);
-        return itemService.create(itemImages, title, price, description);
+    @PostMapping("/create")
+    public String create(@RequestBody ItemDTO dto) {
+        log.info("创建商品,itemImages:{},title:{},price:{},description:{}",
+                dto.getItemImages(), dto.getTitle(), dto.getPrice(), dto.getDescription());
+        Item item = new Item();
+        item.setItemImages(dto.getItemImages())
+                .setTitle(dto.getTitle())
+                .setPrice(dto.getPrice())
+                .setDescription(dto.getDescription())
+                .setCreateTime(System.currentTimeMillis() / 1000)
+                //.setUpdateTime(Instant.now().getEpochSecond())
+                .setIsDeleted(0);
+        return itemService.create(item);
     }
 
     @RequestMapping("/update")
@@ -54,7 +59,7 @@ public class ItemController {
         log.info("console端获取商品列表,页码:{}",page);
         // 指定分页大小
         Integer pageSize = 5;
-        List<Item> items = itemService.getByPage(page,pageSize); //查询数据
+        List<Item> items = itemService.getByPage(page,pageSize,null); //查询数据
         Long total = itemService.getTotal(); //总页数
         List<ItemInfoVo> infoVoList = new ArrayList<>(items.size());
         for (Item item : items) {

@@ -22,15 +22,7 @@ public class ItemService {
         return itemMapper.getItemInfo(itemId);
     }
 
-    public String create(String itemImages, String title, Float price, String description) {
-        Item item = new Item();
-        item.setItemImages(itemImages)
-            .setTitle(title)
-            .setPrice(price)
-            .setDescription(description)
-            .setCreateTime(System.currentTimeMillis() / 1000)
-            //.setUpdateTime(Instant.now().getEpochSecond())
-            .setIsDeleted(0);
+    public String create(Item item) {
         int incrementId = itemMapper.createItem(item);
         Long id = item.getId();
         return incrementId > 0 ? "自增id:" + id: "失败";
@@ -51,9 +43,9 @@ public class ItemService {
         return itemMapper.deleteItem(itemId) > 0 ? "成功" : "失败";
     }
 
-    public List<Item> getByPage(Integer page,Integer pageSize) {
+    public List<Item> getByPage(Integer page,Integer pageSize,String keyword) {
         Integer offset = (page -1) * pageSize;
-        return itemMapper.getItemListByPage(offset,pageSize);
+        return itemMapper.getItemListByPage(offset,pageSize,keyword);
     }
 
     public Long getTotal() {
