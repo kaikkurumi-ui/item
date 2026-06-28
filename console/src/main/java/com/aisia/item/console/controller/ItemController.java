@@ -31,11 +31,11 @@ public class ItemController {
                          @RequestParam("description") String description) {
         log.info("创建商品,itemImages:{},title:{},price:{},description:{}", itemImages, title, price, description);
         Long result = 0L;
-        try{
-            result = itemService.edit(null, itemImages, title, price, description,0);
+        try {
+            result = itemService.edit(null, itemImages, title, price, description, 0);
             return "新增商品成功，商品id为:" + result;
         } catch (RuntimeException e) {
-           log.error("出错了:{}",e.getMessage());
+            log.error("出错了:{}", e.getMessage());
         }
         return "新增商品失败";
     }
@@ -47,13 +47,13 @@ public class ItemController {
                          @RequestParam("price") Float price,
                          @RequestParam("description") String description,
                          @RequestParam("isDeleted") Integer isDeleted) {
-        log.info("更新商品信息,itemId:{},itemImages:{},title:{},price:{},description:{},isDeleted:{}", itemId, itemImages, title, price, description,isDeleted);
+        log.info("更新商品信息,itemId:{},itemImages:{},title:{},price:{},description:{},isDeleted:{}", itemId, itemImages, title, price, description, isDeleted);
         Long result = 0L;
-        try{
-            result = itemService.edit(itemId, itemImages, title, price, description,isDeleted);
+        try {
+            result = itemService.edit(itemId, itemImages, title, price, description, isDeleted);
             return "更新商品信息成功，商品id为:" + result;
         } catch (RuntimeException e) {
-            log.error("出错了:{}",e.getMessage());
+            log.error("出错了:{}", e.getMessage());
         }
         return "更新商品失败";
     }
@@ -65,12 +65,13 @@ public class ItemController {
     }
 
     @RequestMapping("/list")
-    public ItemListVo list(@RequestParam("page") Integer page){
-        log.info("console端获取商品列表,页码:{}",page);
+    public ItemListVo list(@RequestParam("page") Integer page,
+                           @RequestParam(value = "keyword", required = false) String keyword) {
+        log.info("console端获取商品列表,页码:{}", page);
         // 指定分页大小
         Integer pageSize = 5;
-        List<Item> items = itemService.getByPage(page,pageSize,null); //查询数据
-        Long total = itemService.getTotal(); //总页数
+        List<Item> items = itemService.getByPage(page, pageSize, keyword); //查询数据
+        Long total = itemService.getTotal(keyword); //总页数
         List<ItemInfoVo> infoVoList = new ArrayList<>(items.size());
         for (Item item : items) {
             ItemInfoVo itemInfoVo = ItemInfoVo.builder()

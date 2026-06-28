@@ -23,8 +23,8 @@ public interface ItemMapper {
 
     List<Item> getItemListByPage(@Param("offset") Integer offset,@Param("pageSize") Integer pageSize,@Param("keyword") String keyword);
 
-    @Select("select count(*) from item where item.item.is_deleted != 1")
-    Long getTotal();
+
+    Long getTotal(@Param("keyword") String keyword);
 
     @Select("SELECT * FROM item WHERE id = #{itemId}")
     Item getItemById(Long itemId);
