@@ -26,10 +26,11 @@ public class ItemController {
     private ItemService itemService;
 
     @GetMapping("/list")
-    public ItemListVo list(@RequestParam("page") Integer page){
+    public ItemListVo list(@RequestParam("page") Integer page,
+                           @RequestParam(value = "keyword",required = false) String keyword){
         log.info("查询商品列表,第{}页",page);
         Integer pageSize = 5;
-        List<Item> items = itemService.getByPage(page,pageSize);
+        List<Item> items = itemService.getByPage(page,pageSize,keyword);
         // 通过判断查询的商品集合大小，和每页大小做对比
         Boolean isEnd = items.size() < pageSize;
         List<ItemInfoVo> list = new ArrayList<>(items.size());

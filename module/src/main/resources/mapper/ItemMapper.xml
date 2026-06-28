@@ -50,7 +50,10 @@
         select *
         from item
         where is_deleted != 1
+        <if test="keyword != null and keyword != ''">
+           AND title like concat("%",#{keyword},"%")
+        </if>
         order by id
-            limit #{offset}, #{pageSize}
+        limit #{offset}, #{pageSize}
     </select>
 </mapper>

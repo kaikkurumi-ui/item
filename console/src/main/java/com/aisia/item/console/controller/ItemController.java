@@ -30,7 +30,14 @@ public class ItemController {
                          @RequestParam("price") Float price,
                          @RequestParam("description") String description) {
         log.info("创建商品,itemImages:{},title:{},price:{},description:{}", itemImages, title, price, description);
-        return itemService.create(itemImages, title, price, description);
+        Long result = 0L;
+        try{
+            result = itemService.edit(null, itemImages, title, price, description,0);
+            return "新增商品成功，商品id为:" + result;
+        } catch (RuntimeException e) {
+           log.error("出错了:{}",e.getMessage());
+        }
+        return "新增商品失败";
     }
 
     @RequestMapping("/update")
@@ -38,9 +45,17 @@ public class ItemController {
                          @RequestParam("itemImages") String itemImages,
                          @RequestParam("title") String title,
                          @RequestParam("price") Float price,
-                         @RequestParam("description") String description) {
-        log.info("更新商品信息,itemId:{},itemImages:{},title:{},price:{},description:{}", itemId, itemImages, title, price, description);
-        return itemService.update(itemId, itemImages, title, price, description);
+                         @RequestParam("description") String description,
+                         @RequestParam("isDeleted") Integer isDeleted) {
+        log.info("更新商品信息,itemId:{},itemImages:{},title:{},price:{},description:{},isDeleted:{}", itemId, itemImages, title, price, description,isDeleted);
+        Long result = 0L;
+        try{
+            result = itemService.edit(itemId, itemImages, title, price, description,isDeleted);
+            return "更新商品信息成功，商品id为:" + result;
+        } catch (RuntimeException e) {
+            log.error("出错了:{}",e.getMessage());
+        }
+        return "更新商品失败";
     }
 
     @RequestMapping("/delete")
@@ -54,7 +69,7 @@ public class ItemController {
         log.info("console端获取商品列表,页码:{}",page);
         // 指定分页大小
         Integer pageSize = 5;
-        List<Item> items = itemService.getByPage(page,pageSize); //查询数据
+        List<Item> items = itemService.getByPage(page,pageSize,null); //查询数据
         Long total = itemService.getTotal(); //总页数
         List<ItemInfoVo> infoVoList = new ArrayList<>(items.size());
         for (Item item : items) {
