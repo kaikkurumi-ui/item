@@ -50,7 +50,7 @@ public class ItemController {
     @GetMapping("/info")
     public ItemDetailInfoVo info(@RequestParam("itemId") Long itemId){
         log.info("查询商品id详情:{}",itemId);
-        Item item = itemService.getInfo(itemId);
+        Item item = itemService.getById(itemId);
         ItemDetailInfoVo itemDetailInfoVo = new ItemDetailInfoVo();
 
         String[] imagesArr = item.getItemImages().split("\\$");

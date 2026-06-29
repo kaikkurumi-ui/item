@@ -22,11 +22,11 @@ public class ItemService {
         return itemMapper.getAll();
     }
 
-    public Item getInfo(Long itemId) {
-        return itemMapper.getItemInfo(itemId);
+    public Item getById(Long itemId) {
+        return itemMapper.getById(itemId);
     }
 
-    public String create(String itemImages, String title, Float price, String description) {
+    public Long insert(String itemImages, String title, Float price, String description) {
         Item item = new Item();
         item.setItemImages(itemImages)
                 .setTitle(title)
@@ -35,12 +35,12 @@ public class ItemService {
                 .setCreateTime(System.currentTimeMillis() / 1000)
                 //.setUpdateTime(Instant.now().getEpochSecond())
                 .setIsDeleted(0);
-        int incrementId = itemMapper.createItem(item);
+        int incrementId = itemMapper.insert(item);
         Long id = item.getId();
-        return incrementId > 0 ? "自增id:" + id : "失败";
+        return incrementId > 0 ? id : -1;
     }
 
-    public String update(Long itemId, String itemImages, String title, Float price, String description) {
+    public Boolean update(Long itemId, String itemImages, String title, Float price, String description,Integer isDeleted) {
         Item item = new Item();
         item.setId(itemId).
                 setItemImages(itemImages)
@@ -50,7 +50,7 @@ public class ItemService {
                 .setCreateTime(System.currentTimeMillis() / 1000)
                 //.setUpdateTime(Instant.now().getEpochSecond())
                 .setIsDeleted(0);
-        return itemMapper.updateItem(item) > 0 ? "成功" : "失败";
+        return itemMapper.update(item) > 0;
     }
 
     public Long edit(Long itemId, String itemImages, String title, Float price, String description, Integer isDeleted) {
@@ -64,31 +64,23 @@ public class ItemService {
         if (price != null && price < 0) {
             throw new IllegalArgumentException("price must be positive");
         }
-        Item item = new Item();
-        item.setItemImages(itemImages)
-                .setTitle(title)
-                .setPrice(price)
-                .setDescription(description)
-                .setCreateTime(System.currentTimeMillis() / 1000)
-                .setIsDeleted(isDeleted);
         if (itemId == null) {
             // 新增
-            int affRows = itemMapper.createItem(item);
-            if (affRows > 0) {
-                return item.getId();
+            Long id = insert(itemImages, title, price, description);
+            if (id > 0) {
+                return id;
             } else {
                 throw new RuntimeException("insert item fail");
             }
         } else {
             // 更新
             // 判断该商品是否在数据库中
-            Item item2 = itemMapper.getItemById(itemId);
+            Item item2 = itemMapper.extractById(itemId);
             if (item2 == null) {
                 throw new RuntimeException("item no exist");
             }
-            item.setId(itemId);
-            int affRows = itemMapper.updateItem(item);
-            if (affRows > 0) {
+            Boolean success = update(itemId, itemImages, title, price, description, isDeleted);
+            if (success) {
                 return itemId;
             } else {
                 throw new RuntimeException("update item fail");
@@ -97,7 +89,7 @@ public class ItemService {
     }
 
     public String delete(Long itemId) {
-        return itemMapper.deleteItem(itemId) > 0 ? "成功" : "失败";
+        return itemMapper.delete(itemId) > 0 ? "成功" : "失败";
     }
 
     public List<Item> getByPage(Integer page, Integer pageSize, String keyword) {
@@ -107,5 +99,9 @@ public class ItemService {
 
     public Long getTotal(String keyword) {
         return itemMapper.getTotal(keyword);
+    }
+
+    public Item extractById(Long itemId) {
+        return itemMapper.extractById(itemId);
     }
 }

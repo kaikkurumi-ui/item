@@ -24,8 +24,8 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
-    @RequestMapping("/create")
-    public String create(@RequestParam("itemImages") String itemImages,
+    @RequestMapping("/insert")
+    public String insert(@RequestParam("itemImages") String itemImages,
                          @RequestParam("title") String title,
                          @RequestParam("price") Float price,
                          @RequestParam("description") String description) {
@@ -91,7 +91,7 @@ public class ItemController {
     @RequestMapping("/info")
     public ItemDetailInfoVo info(@RequestParam("itemId") Long itemId) {
         log.info("console端根据商品id获取商品详情:{}", itemId);
-        Item item = itemService.getInfo(itemId);
+        Item item = itemService.getById(itemId);
         ItemDetailInfoVo itemDetailInfoVo = new ItemDetailInfoVo();
         itemDetailInfoVo.setItemImages(Arrays.asList(item.getItemImages().split("\\$")));
         itemDetailInfoVo.setDescription(item.getDescription());

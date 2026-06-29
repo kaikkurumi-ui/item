@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.aisia.item.module.mapper.ItemMapper">
 
-    <insert id="createItem" parameterType="com.aisia.item.module.entity.Item" useGeneratedKeys="true" keyProperty="id">
+    <insert id="create" parameterType="com.aisia.item.module.entity.Item" useGeneratedKeys="true" keyProperty="id">
         insert into item(
         <if test="itemImages != null and itemImages != ''">item_images,</if>
         <if test="title != null and title != ''">title,</if>
@@ -22,7 +22,7 @@
         <if test="updateTime != null">#{updateTime},</if>
         #{isDeleted})
     </insert>
-    <update id="updateItem" parameterType="com.aisia.item.module.entity.Item">
+    <update id="update" parameterType="com.aisia.item.module.entity.Item">
         update item
         <set>
             <if test="itemImages != null and itemImages != ''">
