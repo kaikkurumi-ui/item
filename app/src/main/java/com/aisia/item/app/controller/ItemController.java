@@ -4,8 +4,8 @@ import com.aisia.item.app.domain.ItemDetailInfoVo;
 import com.aisia.item.app.domain.ItemInfoVo;
 import com.aisia.item.app.domain.ItemListVo;
 import com.aisia.item.module.entity.Item;
-import com.aisia.item.module.mapper.ItemMapper;
-import com.aisia.item.module.service.ItemService;
+import com.aisia.item.module.service.impl.ItemService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,15 +26,15 @@ public class ItemController {
     private ItemService itemService;
 
     @GetMapping("/list")
-    public ItemListVo list(@RequestParam("page") Integer page,
+    public ItemListVo list(@RequestParam("pageNum") Integer pageNum,
                            @RequestParam(value = "keyword",required = false) String keyword){
-        log.info("查询商品列表,第{}页",page);
+        log.info("查询商品列表,第{}页",pageNum);
         Integer pageSize = 5;
-        List<Item> items = itemService.getByPage(page,pageSize,keyword);
+        Page<Item> items = itemService.getByPage(pageNum,pageSize,keyword);
         // 通过判断查询的商品集合大小，和每页大小做对比
-        Boolean isEnd = items.size() < pageSize;
-        List<ItemInfoVo> list = new ArrayList<>(items.size());
-        for (Item item : items) {
+        Boolean isEnd = items.getRecords().size() < pageSize;
+        List<ItemInfoVo> list = new ArrayList<>();
+        for (Item item : items.getRecords()) {
             ItemInfoVo itemInfoVo = new ItemInfoVo();
             itemInfoVo.setItemImage(item.getItemImages().split("\\$")[0])
                     .setPrice(item.getPrice())

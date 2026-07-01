@@ -1,59 +1,67 @@
 package com.aisia.item.module.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
-
 import java.math.BigDecimal;
+
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import java.io.Serializable;
 import java.time.Instant;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
+/**
+ * <p>
+ * 商品信息表
+ * </p>
+ *
+ * @author kaikai
+ * @since 2026-06-29
+ */
 @Data
-@NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@AllArgsConstructor
+@TableName("item")
 public class Item {
 
-    /**
-     * 商品ID
-     */
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
      * 商品图片，用$符拼接
      */
+    @TableField("item_images")
     private String itemImages;
 
     /**
      * 商品标题
      */
+    @TableField("title")
     private String title;
 
     /**
      * 商品价格
      */
+    @TableField("price")
     private Float price;
 
     /**
      * 商品详情介绍
      */
+    @TableField("description")
     private String description;
 
-    /**
-     * 创建时间（Unix时间戳，秒）
-     */
+    @TableField("create_time")
     private Long createTime;
 
-    /**
-     * 更新时间（Unix时间戳，秒）
-     * 在对象创建时设置默认值
-     */
+    @TableField("update_time")
     private Long updateTime = Instant.now().getEpochSecond();
 
-    /**
-     * 是否删除（0-未删除，1-已删除）
-     */
+    @TableField("is_deleted")
     private Integer isDeleted;
+
 
 }

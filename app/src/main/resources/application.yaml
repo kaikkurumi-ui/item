@@ -8,6 +8,13 @@ spring:
     username: root
     password: 123456
 
+mybatis-plus:
+  configuration:
+    # MyBatis 配置
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto
 #  jackson:
 #    default-property-inclusion: use_defaults #使用 Jackson 默认策略。
 #   default-property-inclusion: non_default #字段等于默认值时不输出
@@ -16,8 +23,8 @@ spring:
 #   default-property-inclusion: non_null # 输出字段中有null值的字段，该字段就不输出
 #   default-property-inclusion: custom 自定义配置，需要设置Filter过滤器和注解@JsonInclude
 #   default-property-inclusion: always 表示所有字段都输出。
-mybatis:
-  mapper-locations: classpath:mapper/*.xml
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#mybatis:
+#  mapper-locations: classpath:mapper/*.xml
+#  configuration:
+#    map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

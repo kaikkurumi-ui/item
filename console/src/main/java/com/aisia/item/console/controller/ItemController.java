@@ -5,7 +5,8 @@ import com.aisia.item.console.domain.ItemInfoVo;
 import com.aisia.item.console.domain.ItemListVo;
 import com.aisia.item.console.utils.DateTimeUtil;
 import com.aisia.item.module.entity.Item;
-import com.aisia.item.module.service.ItemService;
+import com.aisia.item.module.service.impl.ItemService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,15 +66,15 @@ public class ItemController {
     }
 
     @RequestMapping("/list")
-    public ItemListVo list(@RequestParam("page") Integer page,
+    public ItemListVo list(@RequestParam("pageNum") Integer pageNum,
                            @RequestParam(value = "keyword", required = false) String keyword) {
-        log.info("console端获取商品列表,页码:{}", page);
+        log.info("console端获取商品列表,页码:{}", pageNum);
         // 指定分页大小
         Integer pageSize = 5;
-        List<Item> items = itemService.getByPage(page, pageSize, keyword); //查询数据
-        Long total = itemService.getTotal(keyword); //总页数
-        List<ItemInfoVo> infoVoList = new ArrayList<>(items.size());
-        for (Item item : items) {
+        Page<Item> items = itemService.getByPage(pageNum, pageSize, keyword); //查询数据
+//        Long total = itemService.getTotal(keyword); //总页数
+        List<ItemInfoVo> infoVoList = new ArrayList<>();
+        for (Item item : items.getRecords()) {
             ItemInfoVo itemInfoVo = ItemInfoVo.builder()
                     .itemImage(item.getItemImages().split("\\$")[0])
                     .price(item.getPrice())
@@ -84,7 +85,7 @@ public class ItemController {
         ItemListVo itemListVo = new ItemListVo();
         itemListVo.setList(infoVoList);
         itemListVo.setPageSize(pageSize);
-        itemListVo.setTotal(total);
+        itemListVo.setTotal(items.getTotal());
         return itemListVo;
     }
 

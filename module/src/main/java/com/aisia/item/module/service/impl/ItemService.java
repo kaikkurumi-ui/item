@@ -1,29 +1,27 @@
-package com.aisia.item.module.service;
+package com.aisia.item.module.service.impl;
 
 import com.aisia.item.module.entity.Item;
 import com.aisia.item.module.mapper.ItemMapper;
+import com.aisia.item.module.service.IItemService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.micrometer.common.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.support.ResourceTransactionManager;
 
-import java.time.Instant;
 import java.util.List;
 
 @Service
-public class ItemService {
-
-    @Autowired
-    private ItemMapper itemMapper;
-    @Autowired
-    private ResourceTransactionManager resourceTransactionManager;
+public class ItemService extends ServiceImpl<ItemMapper, Item> implements IItemService {
 
     public List<Item> getAll() {
-        return itemMapper.getAll();
+        return baseMapper.selectList(Wrappers.query(Item.class).eq("is_deleted", 0));
     }
 
     public Item getById(Long itemId) {
-        return itemMapper.getById(itemId);
+        return baseMapper.getById(itemId);
     }
 
     public Long insert(String itemImages, String title, Float price, String description) {
@@ -35,22 +33,20 @@ public class ItemService {
                 .setCreateTime(System.currentTimeMillis() / 1000)
                 //.setUpdateTime(Instant.now().getEpochSecond())
                 .setIsDeleted(0);
-        int incrementId = itemMapper.insert(item);
+        int incrementId = baseMapper.insert(item);
         Long id = item.getId();
         return incrementId > 0 ? id : -1;
     }
 
-    public Boolean update(Long itemId, String itemImages, String title, Float price, String description,Integer isDeleted) {
-        Item item = new Item();
-        item.setId(itemId).
-                setItemImages(itemImages)
-                .setTitle(title)
-                .setPrice(price)
-                .setDescription(description)
-                .setCreateTime(System.currentTimeMillis() / 1000)
-                //.setUpdateTime(Instant.now().getEpochSecond())
-                .setIsDeleted(0);
-        return itemMapper.update(item) > 0;
+    public Boolean update(Long id, String itemImages, String title, Float price, String description,Integer isDeleted) {
+        UpdateWrapper<Item> wrapper = new UpdateWrapper<>();
+        wrapper.set("item_images",itemImages);
+        wrapper.set(StringUtils.isNotEmpty(title),"title",title);
+        wrapper.set("price",price);
+        wrapper.set(StringUtils.isNotEmpty(description),"description",description);
+        wrapper.set(isDeleted != null,"is_deleted",isDeleted);
+        wrapper.eq("id",id);
+        return baseMapper.update(wrapper) > 0;
     }
 
     public Long edit(Long itemId, String itemImages, String title, Float price, String description, Integer isDeleted) {
@@ -75,7 +71,7 @@ public class ItemService {
         } else {
             // 更新
             // 判断该商品是否在数据库中
-            Item item2 = itemMapper.extractById(itemId);
+            Item item2 = baseMapper.extractById(itemId);
             if (item2 == null) {
                 throw new RuntimeException("item no exist");
             }
@@ -89,19 +85,25 @@ public class ItemService {
     }
 
     public String delete(Long itemId) {
-        return itemMapper.delete(itemId) > 0 ? "成功" : "失败";
+        return baseMapper.delete(itemId) > 0 ? "成功" : "失败";
     }
 
-    public List<Item> getByPage(Integer page, Integer pageSize, String keyword) {
-        Integer offset = (page - 1) * pageSize;
-        return itemMapper.getItemListByPage(offset, pageSize, keyword);
+    public Page<Item> getByPage(Integer pageNum, Integer pageSize, String keyword) {
+        QueryWrapper<Item> wrapper = new QueryWrapper<>();
+        wrapper.eq("is_deleted",0);
+        wrapper.like(StringUtils.isNotEmpty(keyword),"title",keyword);
+        Page<Item> page = new Page<>(pageNum,pageSize);
+        return baseMapper.selectPage(page, wrapper);
     }
 
     public Long getTotal(String keyword) {
-        return itemMapper.getTotal(keyword);
+        return this.lambdaQuery()
+                .eq(Item::getIsDeleted, 0)
+                .like(StringUtils.isNotEmpty(keyword), Item::getTitle, keyword)
+                .count();
     }
 
     public Item extractById(Long itemId) {
-        return itemMapper.extractById(itemId);
+        return baseMapper.extractById(itemId);
     }
 }
