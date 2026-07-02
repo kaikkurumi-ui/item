@@ -23,7 +23,6 @@ public interface ItemMapper {
 
     List<Item> getItemListByPage(@Param("offset") Integer offset,@Param("pageSize") Integer pageSize,@Param("keyword") String keyword);
 
-
     Long getTotal(@Param("keyword") String keyword);
 
     @Select("SELECT * FROM item WHERE id = #{itemId}")
