@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.aisia.item.module.mapper.TestMapper">
+<mapper namespace="com.aisia.item.module.mapper.CategoryMapper">
 
 
-    <insert id="insert" parameterType="com.aisia.item.module.entity.TestEntity" useGeneratedKeys="true" keyProperty="id">
-        insert into test (
+    <insert id="insert" parameterType="com.aisia.item.module.entity.CategoryEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into category (
         <trim suffixOverrides=",">
             <if test="name != null and name != ''">
                 `name`,
             </if>
-            <if test="age != null">
-                age,
+            <if test="categoryImage != null and categoryImage != ''">
+                category_image,
             </if>
-            <if test="clazz != null and clazz != ''">
-                clazz,
+            <if test="description != null and description != ''">
+                `description`,
             </if>
             <if test="createTime != null">
                 create_time,
@@ -26,8 +27,8 @@
         ) VALUES (
         <trim suffixOverrides=",">
             <if test="name != null and name != ''">#{name},</if>
-            <if test="age != null">#{age},</if>
-            <if test="clazz != null and clazz != ''">#{clazz},</if>
+            <if test="categoryImage != null and categoryImage != ''">#{categoryImage},</if>
+            <if test="description != null and description != ''">#{description},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateTime != null">#{updateTime},</if>
             #{isDeleted},
@@ -35,17 +36,17 @@
         )
     </insert>
 
-    <update id="update" parameterType="com.aisia.item.module.entity.TestEntity">
-        update test
+    <update id="update" parameterType="com.aisia.item.module.entity.CategoryEntity">
+        update category
         <set>
             <if test="name != null and name != ''">
                 `name` = #{name},
             </if>
-            <if test="age != null">
-                age = #{age},
+            <if test="categoryImage != null and categoryImage != ''">
+                category_image = #{categoryImage},
             </if>
-            <if test="clazz != null and clazz != ''">
-                clazz = #{clazz},
+            <if test="description != null and description != ''">
+                `description` = #{description},
             </if>
             <if test="updateTime != null">
                 update_time = #{updateTime},
@@ -56,4 +57,11 @@
         </set>
         where id = #{id}
     </update>
+    <select id="getCategoryIds" resultType="java.lang.Long" parameterType="java.lang.String">
+        select id from category
+        where is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            and name like concat("%",#{keyword},"%")
+        </if>
+    </select>
 </mapper>

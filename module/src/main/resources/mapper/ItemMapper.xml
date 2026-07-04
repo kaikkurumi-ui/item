@@ -12,6 +12,7 @@
         <if test="description != null and description != ''">description,</if>
         <if test="createTime != null">create_time,</if>
         <if test="updateTime != null">update_time,</if>
+        <if test="categoryId != null">category_id,</if>
         is_deleted)
         values(
         <if test="itemImages != null and itemImages != ''">#{itemImages},</if>
@@ -20,6 +21,7 @@
         <if test="description != null and description != ''">#{description},</if>
         <if test="createTime != null">#{createTime},</if>
         <if test="updateTime != null">#{updateTime},</if>
+        <if test="categoryId != null">#{categoryId},</if>
         #{isDeleted})
     </insert>
     <update id="update" parameterType="com.aisia.item.module.entity.Item">
@@ -43,6 +45,9 @@
             <if test="isDeleted != null">
                 is_deleted = #{isDeleted},
             </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId}
+            </if>
         </set>
         where id = #{id}
     </update>
@@ -51,17 +56,54 @@
         from item
         where is_deleted != 1
         <if test="keyword != null and keyword != ''">
-           AND title like concat("%",#{keyword},"%")
+            AND title like concat("%",#{keyword},"%")
         </if>
         order by id
         limit #{offset}, #{pageSize}
     </select>
     <select id="getTotal" resultType="java.lang.Long" parameterType="java.lang.String">
         select count(*)
-        from item
-        where is_deleted != 1
+        from item i inner join category c on i.category_id=c.id
+        where i.is_deleted != 1
         <if test="keyword != null and keyword != ''">
-            and title like concat("%",#{keyword},"%")
+            and (title like concat("%",#{keyword},"%")
+            or c.name like concat("%",#{keyword},"%")
+            )
         </if>
+    </select>
+    <select id="consoleGetItemListByPage" resultType="com.aisia.item.module.entity.Item">
+        select *
+        from item i inner join category c on i.category_id = c.id
+        where i.is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            and (
+            i.title like concat('%', #{keyword}, '%')
+            or c.name like concat('%', #{keyword}, '%')
+            )
+        </if>
+        order by i.id
+        limit #{offset}, #{pageSize}
+    </select>
+    <select id="appGetByPage" resultType="com.aisia.item.module.entity.Item">
+        select *
+        from item
+        <where>
+            is_deleted = 0
+            <if test="(keyword != null and keyword != '') or (strIds != null and strIds != '')">
+                and (
+                <if test="keyword != null and keyword != ''">
+                    title like concat('%', #{keyword}, '%')
+                </if>
+                <if test="keyword != null and keyword != '' and strIds != null and strIds != ''">
+                    or
+                </if>
+                <if test="strIds != null and strIds != ''">
+                    category_id in (${strIds})
+                </if>
+                )
+            </if>
+        </where>
+        order by id
+        limit #{offset}, #{pageSize}
     </select>
 </mapper>

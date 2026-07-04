@@ -56,4 +56,9 @@ public class Item {
      */
     private Integer isDeleted;
 
+    /**
+     * 分类id
+     */
+    private Long categoryId;
+
 }

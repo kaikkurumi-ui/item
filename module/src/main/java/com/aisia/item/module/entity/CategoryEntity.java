@@ -10,38 +10,38 @@ import lombok.ToString;
 
 /**
  * <p>
- *
+ * 分类信息表
  * </p>
  *
  * @author kaikai
- * @since 2026-07-02
+ * @since 2026-07-03
  */
 @Getter
 @Setter
 @ToString
-@TableName("test")
-public class TestEntity {
+@TableName("category")
+public class CategoryEntity {
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
-     * 姓名
+     * 分类名称
      */
     @TableField("`name`")
     private String name;
 
     /**
-     * 年龄
+     * 分类图片
      */
-    @TableField("age")
-    private Integer age;
+    @TableField("category_image")
+    private String categoryImage;
 
     /**
-     * 班级
+     * 分类详情描述
      */
-    @TableField("clazz")
-    private String clazz;
+    @TableField("`description`")
+    private String description;
 
     /**
      * 创建时间
@@ -53,7 +53,7 @@ public class TestEntity {
      * 更新时间
      */
     @TableField("update_time")
-    private Long updateTime = System.currentTimeMillis();
+    private Long updateTime = System.currentTimeMillis() / 1000;
 
     /**
      * 是否删除,逻辑删除,1是删除

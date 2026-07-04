@@ -3,8 +3,10 @@ package com.aisia.item.app.controller;
 import com.aisia.item.app.domain.ItemDetailInfoVo;
 import com.aisia.item.app.domain.ItemInfoVo;
 import com.aisia.item.app.domain.ItemListVo;
+import com.aisia.item.module.entity.CategoryEntity;
 import com.aisia.item.module.entity.Item;
 import com.aisia.item.module.mapper.ItemMapper;
+import com.aisia.item.module.service.CategoryService;
 import com.aisia.item.module.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/item")
@@ -24,21 +27,29 @@ public class ItemController {
 
     @Autowired
     private ItemService itemService;
+    @Autowired
+    private CategoryService categoryService;
 
     @GetMapping("/list")
     public ItemListVo list(@RequestParam("page") Integer page,
                            @RequestParam(value = "keyword",required = false) String keyword){
         log.info("查询商品列表,第{}页",page);
         Integer pageSize = 5;
-        List<Item> items = itemService.getByPage(page,pageSize,keyword);
+        List<Item> items = itemService.appGetByPage(page,pageSize,keyword);
         // 通过判断查询的商品集合大小，和每页大小做对比
         Boolean isEnd = items.size() < pageSize;
         List<ItemInfoVo> list = new ArrayList<>(items.size());
         for (Item item : items) {
+            CategoryEntity category = categoryService.getById(item.getCategoryId());
+            //如果分类不存在则不返回该商品数据
+            if(category == null){
+                continue;
+            }
             ItemInfoVo itemInfoVo = new ItemInfoVo();
             itemInfoVo.setItemImage(item.getItemImages().split("\\$")[0])
                     .setPrice(item.getPrice())
-                    .setTitle(item.getTitle());
+                    .setTitle(item.getTitle())
+                    .setCategoryName(category.getName());
             list.add(itemInfoVo);
         }
         ItemListVo itemListVo = new ItemListVo();
@@ -54,11 +65,17 @@ public class ItemController {
         ItemDetailInfoVo itemDetailInfoVo = new ItemDetailInfoVo();
 
         String[] imagesArr = item.getItemImages().split("\\$");
-
+        CategoryEntity category = categoryService.getById(item.getCategoryId());
+        //如果商品类目不存在则不返回数据
+        if (Objects.isNull(category)){
+            throw new RuntimeException("category not exist");
+        }
         itemDetailInfoVo.setItemImages(Arrays.asList(imagesArr))
                 .setPrice(item.getPrice())
                 .setTitle(item.getTitle())
-                .setDescription(item.getDescription());
+                .setDescription(item.getDescription())
+                .setCategoryName(category.getName())
+                .setCategoryImage(category.getCategoryImage());
         return itemDetailInfoVo;
     }
 }

@@ -9,4 +9,5 @@ public class ItemInfoVo {
     private String itemImage;
     private String title;
     private Float price;
+    private String categoryName;
 }

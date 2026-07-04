@@ -14,4 +14,6 @@ public class ItemDetailInfoVo {
     private String description;
     private String createTime;
     private String updateTime;
+    private String categoryName;
+    private String categoryImage;
 }
