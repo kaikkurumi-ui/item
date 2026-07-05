@@ -5,6 +5,7 @@ import com.aisia.item.app.domain.ItemInfoVo;
 import com.aisia.item.app.domain.ItemListVo;
 import com.aisia.item.module.entity.CategoryEntity;
 import com.aisia.item.module.entity.Item;
+import com.aisia.item.module.entity.ItemAndCategory;
 import com.aisia.item.module.mapper.ItemMapper;
 import com.aisia.item.module.service.CategoryService;
 import com.aisia.item.module.service.ItemService;
@@ -35,21 +36,16 @@ public class ItemController {
                            @RequestParam(value = "keyword",required = false) String keyword){
         log.info("查询商品列表,第{}页",page);
         Integer pageSize = 5;
-        List<Item> items = itemService.appGetByPage(page,pageSize,keyword);
+        List<ItemAndCategory> items = itemService.getItemAndCateByPage(page,pageSize,keyword);
         // 通过判断查询的商品集合大小，和每页大小做对比
         Boolean isEnd = items.size() < pageSize;
         List<ItemInfoVo> list = new ArrayList<>(items.size());
-        for (Item item : items) {
-            CategoryEntity category = categoryService.getById(item.getCategoryId());
-            //如果分类不存在则不返回该商品数据
-            if(category == null){
-                continue;
-            }
+        for (ItemAndCategory i : items) {
             ItemInfoVo itemInfoVo = new ItemInfoVo();
-            itemInfoVo.setItemImage(item.getItemImages().split("\\$")[0])
-                    .setPrice(item.getPrice())
-                    .setTitle(item.getTitle())
-                    .setCategoryName(category.getName());
+            itemInfoVo.setItemImage(i.getItemImages().split("\\$")[0])
+                    .setPrice(i.getPrice())
+                    .setTitle(i.getTitle())
+                    .setCategoryName(i.getCategoryName());
             list.add(itemInfoVo);
         }
         ItemListVo itemListVo = new ItemListVo();
@@ -61,21 +57,16 @@ public class ItemController {
     @GetMapping("/info")
     public ItemDetailInfoVo info(@RequestParam("itemId") Long itemId){
         log.info("查询商品id详情:{}",itemId);
-        Item item = itemService.getById(itemId);
+        ItemAndCategory i = itemService.getItemAndCateById(itemId);
         ItemDetailInfoVo itemDetailInfoVo = new ItemDetailInfoVo();
 
-        String[] imagesArr = item.getItemImages().split("\\$");
-        CategoryEntity category = categoryService.getById(item.getCategoryId());
-        //如果商品类目不存在则不返回数据
-        if (Objects.isNull(category)){
-            throw new RuntimeException("category not exist");
-        }
+        String[] imagesArr = i.getItemImages().split("\\$");
         itemDetailInfoVo.setItemImages(Arrays.asList(imagesArr))
-                .setPrice(item.getPrice())
-                .setTitle(item.getTitle())
-                .setDescription(item.getDescription())
-                .setCategoryName(category.getName())
-                .setCategoryImage(category.getCategoryImage());
+                .setPrice(i.getPrice())
+                .setTitle(i.getTitle())
+                .setDescription(i.getDescription())
+                .setCategoryName(i.getCategoryName())
+                .setCategoryImage(i.getCategoryImage());
         return itemDetailInfoVo;
     }
 }

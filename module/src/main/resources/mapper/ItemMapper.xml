@@ -106,4 +106,25 @@
         order by id
         limit #{offset}, #{pageSize}
     </select>
+    <select id="getItemAndCateByPage" resultType="com.aisia.item.module.entity.ItemAndCategory">
+        select c.name as categoryName,c.category_image,i.*
+        from category c left join item i
+        on i.category_id = c.id
+        where i.is_deleted = 0 and c.is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            and ( i.title like concat('%', #{keyword}, '%')
+            or c.name like concat('%', #{keyword}, '%')
+            )
+        </if>
+        order by i.id
+        limit #{offset}, #{pageSize}
+    </select>
+    <select id="getItemAndCateById" resultType="com.aisia.item.module.entity.ItemAndCategory"
+            parameterType="java.lang.Long">
+        select c.name as categoryName,c.category_image,i.*
+        from category c left join item i
+        on i.category_id = c.id
+        where i.is_deleted = 0
+        and i.id = #{itemId}
+    </select>
 </mapper>

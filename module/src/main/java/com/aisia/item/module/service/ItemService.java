@@ -2,6 +2,7 @@ package com.aisia.item.module.service;
 
 import com.aisia.item.module.entity.CategoryEntity;
 import com.aisia.item.module.entity.Item;
+import com.aisia.item.module.entity.ItemAndCategory;
 import com.aisia.item.module.mapper.ItemMapper;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,5 +133,14 @@ public class ItemService {
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));
         return itemMapper.appGetByPage(offset,strIds,keyword,pageSize);
+    }
+
+    public List<ItemAndCategory> getItemAndCateByPage(Integer page, Integer pageSize, String keyword) {
+        Integer offset = (page - 1) * pageSize;
+        return itemMapper.getItemAndCateByPage(offset,pageSize,keyword);
+    }
+
+    public ItemAndCategory getItemAndCateById(Long itemId) {
+        return itemMapper.getItemAndCateById(itemId);
     }
 }

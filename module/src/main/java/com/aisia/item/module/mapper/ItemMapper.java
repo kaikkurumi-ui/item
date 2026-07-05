@@ -1,6 +1,7 @@
 package com.aisia.item.module.mapper;
 
 import com.aisia.item.module.entity.Item;
+import com.aisia.item.module.entity.ItemAndCategory;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -34,4 +35,8 @@ public interface ItemMapper {
     List<Item> consoleGetItemListByPage(@Param("offset") Integer offset, @Param("pageSize") Integer pageSize, @Param("keyword") String keyword);
 
     List<Item> appGetByPage(@Param("offset") Integer offset, @Param("strIds") String strIds, @Param("keyword") String keyword, @Param("pageSize") Integer pageSize);
+
+    List<ItemAndCategory> getItemAndCateByPage(@Param("offset") Integer offset, @Param("pageSize") Integer pageSize, @Param("keyword") String keyword);
+
+    ItemAndCategory getItemAndCateById(@Param("itemId") Long itemId);
 }
