@@ -115,10 +115,6 @@ public class ItemService {
         return itemMapper.extractById(itemId);
     }
 
-    public Integer countByCategoryId(Long categoryId) {
-        return itemMapper.countByCategoryId(categoryId);
-    }
-
     public List<Item> consoleGetByPage(Integer page, Integer pageSize, String keyword) {
         Integer offset = (page - 1) * pageSize;
         return itemMapper.consoleGetItemListByPage(offset, pageSize, keyword);
@@ -132,5 +128,9 @@ public class ItemService {
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));
         return itemMapper.appGetByPage(offset,strIds,keyword,pageSize);
+    }
+
+    public Integer deleteByCategoryId(Long categoryId) {
+        return itemMapper.deleteByCategoryId(categoryId);
     }
 }

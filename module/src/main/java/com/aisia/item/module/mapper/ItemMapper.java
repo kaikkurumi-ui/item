@@ -28,10 +28,10 @@ public interface ItemMapper {
     @Select("SELECT * FROM item WHERE id = #{itemId}")
     Item extractById(Long itemId);
 
-    @Select("SELECT COUNT(*) FROM item WHERE category_id = #{categoryId} AND is_deleted = 0")
-    int countByCategoryId(@Param("categoryId") Long categoryId);
-
     List<Item> consoleGetItemListByPage(@Param("offset") Integer offset, @Param("pageSize") Integer pageSize, @Param("keyword") String keyword);
 
     List<Item> appGetByPage(@Param("offset") Integer offset, @Param("strIds") String strIds, @Param("keyword") String keyword, @Param("pageSize") Integer pageSize);
+
+    @Update("UPDATE item SET is_deleted = 1 WHERE category_id = #{categoryId} AND is_deleted = 0")
+    Integer deleteByCategoryId(Long categoryId);
 }

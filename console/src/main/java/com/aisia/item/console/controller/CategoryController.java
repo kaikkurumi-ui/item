@@ -85,11 +85,9 @@ public class CategoryController {
 
     @RequestMapping("/delete")
     public String delete(@RequestParam("categoryId") Long categoryId){
-        // 判断该类目下是否有商品
-        Integer itemNums = itemService.countByCategoryId(categoryId);
-        if(itemNums > 0){
-            return "该类目下还有商品，不能删除";
-        }
+        // 删除改类目下的所有商品
+        Integer itemNums = itemService.deleteByCategoryId(categoryId);
+
         int result = categoryService.delete(categoryId);
         return result > 0 ? "成功" : "失败";
     }
