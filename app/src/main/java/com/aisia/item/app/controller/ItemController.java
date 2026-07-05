@@ -15,10 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/item")
@@ -39,8 +38,12 @@ public class ItemController {
         // 通过判断查询的商品集合大小，和每页大小做对比
         Boolean isEnd = items.size() < pageSize;
         List<ItemInfoVo> list = new ArrayList<>(items.size());
+        List<CategoryEntity> categories = categoryService.list();
+        Map<Long, CategoryEntity> categoryMap = categories
+                .stream()
+                .collect(Collectors.toMap(CategoryEntity::getId, Function.identity()));
         for (Item item : items) {
-            CategoryEntity category = categoryService.getById(item.getCategoryId());
+            CategoryEntity category = categoryMap.get(item.getCategoryId());
             //如果分类不存在则不返回该商品数据
             if(category == null){
                 continue;
@@ -68,7 +71,8 @@ public class ItemController {
         CategoryEntity category = categoryService.getById(item.getCategoryId());
         //如果商品类目不存在则不返回数据
         if (Objects.isNull(category)){
-            throw new RuntimeException("category not exist");
+            log.error("category not exist");
+            return null;
         }
         itemDetailInfoVo.setItemImages(Arrays.asList(imagesArr))
                 .setPrice(item.getPrice())
