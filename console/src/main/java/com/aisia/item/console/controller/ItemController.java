@@ -4,7 +4,6 @@ import com.aisia.item.console.domain.ItemDetailInfoVo;
 import com.aisia.item.console.domain.ItemInfoVo;
 import com.aisia.item.console.domain.ItemListVo;
 import com.aisia.item.console.utils.DateTimeUtil;
-import com.aisia.item.module.entity.CategoryEntity;
 import com.aisia.item.module.entity.Item;
 import com.aisia.item.module.service.CategoryService;
 import com.aisia.item.module.service.ItemService;
@@ -14,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/item")

@@ -7,6 +7,13 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
+  servlet:
+    multipart:
+      enabled: true
+      # 单个文件最大大小，例如设置为 10MB
+      max-file-size: 30MB
+      # 整个请求最大大小，建议略大于 max-file-size，例如设置为 20MB
+      max-request-size: 40MB
 
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml

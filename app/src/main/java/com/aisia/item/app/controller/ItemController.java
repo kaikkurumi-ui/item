@@ -1,5 +1,6 @@
 package com.aisia.item.app.controller;
 
+import com.aisia.item.app.domain.ImageVo;
 import com.aisia.item.app.domain.ItemDetailInfoVo;
 import com.aisia.item.app.domain.ItemInfoVo;
 import com.aisia.item.app.domain.ItemListVo;
@@ -8,6 +9,8 @@ import com.aisia.item.module.entity.Item;
 import com.aisia.item.module.mapper.ItemMapper;
 import com.aisia.item.module.service.CategoryService;
 import com.aisia.item.module.service.ItemService;
+import com.aisia.item.module.utils.ImageUtil;
+import com.aliyuncs.exceptions.ClientException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -49,7 +54,18 @@ public class ItemController {
                 continue;
             }
             ItemInfoVo itemInfoVo = new ItemInfoVo();
-            itemInfoVo.setItemImage(item.getItemImages().split("\\$")[0])
+            String imageUrl = item.getItemImages().split("\\$")[0];
+            Float ar = 0F;
+            try {
+                ar = ImageUtil.calculateAr(imageUrl);
+            } catch (URISyntaxException | IOException | ClientException e) {
+                log.error("error:{}", e.getMessage());
+                continue;
+            }
+            ImageVo imageVo = ImageVo.builder()
+                    .url(imageUrl)
+                    .ar(ar).build();
+            itemInfoVo.setImageVo(imageVo)
                     .setPrice(item.getPrice())
                     .setTitle(item.getTitle())
                     .setCategoryName(category.getName());

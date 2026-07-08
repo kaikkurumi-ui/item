@@ -6,9 +6,7 @@ import com.aisia.item.module.mapper.ItemMapper;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.support.ResourceTransactionManager;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +17,8 @@ public class ItemService {
     private ItemMapper itemMapper;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private FileService fileService;
 
     public List<Item> getAll() {
         return itemMapper.getAll();
@@ -127,7 +127,7 @@ public class ItemService {
         String strIds = cateId.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));
-        return itemMapper.appGetByPage(offset,strIds,keyword,pageSize);
+        return itemMapper.appGetByPage(offset, strIds, keyword, pageSize);
     }
 
     public Integer deleteByCategoryId(Long categoryId) {
