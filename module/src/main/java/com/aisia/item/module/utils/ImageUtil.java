@@ -1,5 +1,6 @@
 package com.aisia.item.module.utils;
 
+import com.aliyun.oss.OSSException;
 import com.aliyuncs.exceptions.ClientException;
 
 import javax.imageio.ImageIO;
@@ -18,6 +19,7 @@ public class ImageUtil {
 
     /**
      * 获取上传图片的宽和高
+     *
      * @param inputStream 上传的文件对象的输入流
      * @return int数组，为宽，为高；如果解析失败返回 null
      */
@@ -26,7 +28,7 @@ public class ImageUtil {
         try {
             // 将输入流读取为 BufferedImage 对象
             BufferedImage image = ImageIO.read(inputStream);
-            
+
             // 如果 image 为 null，说明文件不是有效的图片格式或已损坏
             if (image == null) {
                 return null;
@@ -34,9 +36,9 @@ public class ImageUtil {
 
             int width = image.getWidth();
             int height = image.getHeight();
-            
+
             return new int[]{width, height};
-            
+
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
@@ -45,13 +47,14 @@ public class ImageUtil {
 
     /**
      * 计算图片宽高比
+     *
      * @param imageUri 图片uri地址
      * @return ar 宽高比
      */
     public static Float calculateAr(String imageUri) throws URISyntaxException, ClientException, IOException {
         //https://item-shenzhen-lnysys.oss-cn-shenzhen.aliyuncs.com/image/202607/07/4821783416061774_1247x791.png
         // 1. 正则表达式
-        String regex = "_(.*?x.*?)\\.";
+        String regex = "_(\\d+x\\d+)\\.";
 
         // 提取图片地址
         URI url = new URI(imageUri);
@@ -73,22 +76,31 @@ public class ImageUtil {
         }
         String widthStr = "";
         String heightStr = "";
-        if(results.isEmpty()){
-            //图片url格式不符合要求
-            return 0F;
-        }else {
+        if (results.isEmpty()) {
+            //图片url格式不符合要求,没有取到宽高
+            // 请求阿里云图片地址， 加载图片来计算宽高
+            String[] imageInfo = OSSUtil.getImageInfo(path.startsWith("/") ? path.substring(1) : path);
+            //不是有效的图片格式或已损坏
+            if (imageInfo == null) {
+                return 0F;
+            }
+            widthStr = imageInfo[0];
+            heightStr = imageInfo[1];
+        } else {
             String[] split = results.getFirst().split("x");
-            widthStr = split[0];
-            heightStr = split[1];
-            if(heightStr.equals("0")){
+            if (split[1].equals("0")) {
                 // 高为0
                 // 请求阿里云图片地址， 加载图片来计算宽高
                 String[] imageInfo = OSSUtil.getImageInfo(path.startsWith("/") ? path.substring(1) : path);
-                if(imageInfo == null){
+                //不是有效的图片格式或已损坏
+                if (imageInfo == null) {
                     return 0F;
                 }
                 widthStr = imageInfo[0];
                 heightStr = imageInfo[1];
+            }else {
+                widthStr = split[0];
+                heightStr = split[1];
             }
         }
         // 计算宽高
