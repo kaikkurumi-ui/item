@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class ItemInfoVo {
-    private ImageVo image;
+    private ImageVo itemImage;
     private String title;
     private Float price;
     private String categoryName;

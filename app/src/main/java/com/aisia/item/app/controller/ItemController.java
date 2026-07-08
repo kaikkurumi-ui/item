@@ -70,7 +70,7 @@ public class ItemController {
             ImageVo imageVo = ImageVo.builder()
                     .url(imageUrl)
                     .ar(ar).build();
-            itemInfoVo.setImage(imageVo)
+            itemInfoVo.setItemImage(imageVo)
                     .setPrice(item.getPrice())
                     .setTitle(item.getTitle())
                     .setCategoryName(category.getName());
