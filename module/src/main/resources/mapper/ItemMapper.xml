@@ -24,6 +24,30 @@
         <if test="categoryId != null">#{categoryId},</if>
         #{isDeleted})
     </insert>
+    <insert id="saveBatch" parameterType="java.util.List">
+        INSERT INTO item (
+        <if test="cachedDataList[0].itemImages != null and cachedDataList[0].itemImages != ''">item_images,</if>
+        <if test="cachedDataList[0].title != null and cachedDataList[0].title != ''">title,</if>
+        <if test="cachedDataList[0].price != null">price,</if>
+        <if test="cachedDataList[0].description != null and cachedDataList[0].description != ''">description,</if>
+        <if test="cachedDataList[0].createTime != null">create_time,</if>
+        <if test="cachedDataList[0].updateTime != null">update_time,</if>
+        <if test="cachedDataList[0].categoryId != null">category_id,</if>
+        is_deleted
+        ) VALUES
+        <foreach collection="cachedDataList" item="item" separator=",">
+            (
+            #{item.itemImages},
+            #{item.title},
+            #{item.price},
+            #{item.description},
+            #{item.createTime},
+            #{item.updateTime},
+            #{item.categoryId},
+            0
+            )
+        </foreach>
+    </insert>
     <update id="update" parameterType="com.aisia.item.module.entity.Item">
         update item
         <set>

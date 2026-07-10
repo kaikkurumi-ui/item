@@ -124,13 +124,23 @@ public class ItemService {
         Integer offset = (page - 1) * pageSize;
         //查询分类id
         List<Long> cateId = categoryService.getCategoryIds(keyword);
-        String strIds = cateId.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(","));
+        StringBuilder sb = new StringBuilder();
+        for (Long id : cateId) {
+            sb.append(id);
+            sb.append(",");
+        }
+        String strIds = sb.substring(0, sb.length() - 1);
+//        String strIds = cateId.stream()
+//                .map(String::valueOf)
+//                .collect(Collectors.joining(","));
         return itemMapper.appGetByPage(offset, strIds, keyword, pageSize);
     }
 
     public Integer deleteByCategoryId(Long categoryId) {
         return itemMapper.deleteByCategoryId(categoryId);
+    }
+
+    public void saveBatch(List<Item> cachedDataList) {
+        itemMapper.saveBatch(cachedDataList);
     }
 }

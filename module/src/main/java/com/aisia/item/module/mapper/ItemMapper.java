@@ -34,4 +34,6 @@ public interface ItemMapper {
 
     @Update("UPDATE item SET is_deleted = 1 WHERE category_id = #{categoryId} AND is_deleted = 0")
     Integer deleteByCategoryId(Long categoryId);
+
+    void saveBatch(@Param("cachedDataList") List<Item> cachedDataList);
 }

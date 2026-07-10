@@ -1,5 +1,6 @@
 package com.aisia.item.module.entity;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
