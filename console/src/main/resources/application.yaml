@@ -7,6 +7,48 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
+    druid:
+      initial-size: 5
+      max-active: 20
+      min-idle: 5
+      max-wait: 60000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 1800000
+      keep-alive: true
+      filters: stat,wall,config
+      stat-view-servlet:
+        enabled: true                    # 启用监控页面
+        url-pattern: /druid/*            # 访问路径
+        login-username: admin            # 登录用户名
+        login-password: 123    # 登录密码
+        allow: 127.0.0.1                 # IP 白名单（逗号分隔）
+        deny:                            # IP 黑名单
+        reset-enable: false              # 是否允许重置统计数据
+      filter:
+        stat:
+          enabled: true
+          log-slow-sql: true        # 记录慢 SQL
+          slow-sql-millis: 2000     # 慢 SQL 阈值（毫秒）
+          merge-sql: true           # 合并相同结构 SQL 的统计
+
+        slf4j:
+          enabled: true
+          statement-executable-sql-log-enable: true  # 记录实际执行 SQL（含参数值）
+          connection-log-enabled: true               # 记录连接获取/释放
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
+        session-stat-enable: true
+        session-stat-max-count: 1000
+        profile-enable: true             # 启用 profile
+      aop-patterns: com.example.demo.service.*, com.example.demo.mapper.*
+      password: EDTT2w2iD6K/kjMymnMcavVeOp2T9k7PlXW8Fd0UnBAfJBP2+riuTTRdvLO2eWGxgTdRDJ10GD2joqtRrC973Q==
+      connection-properties: config.decrypt=true;config.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAINRexVOPG8q3M0g81V9x6gXAkFw3mT9m/L5ykSYD1ROqeukS3GE09EUVXOV164korKzHI9QRGHKIACUiRhqVNcCAwEAAQ==
   servlet:
     multipart:
       enabled: true
@@ -14,7 +56,6 @@ spring:
       max-file-size: 30MB
       # 整个请求最大大小，建议略大于 max-file-size，例如设置为 20MB
       max-request-size: 40MB
-
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   configuration:
