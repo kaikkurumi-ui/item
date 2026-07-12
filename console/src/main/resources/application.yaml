@@ -22,7 +22,7 @@ spring:
       filters: stat,wall,config
       stat-view-servlet:
         enabled: true                    # 启用监控页面
-        url-pattern: /druid/*            # 访问路径
+        url-pattern: /console-druid/*            # 访问路径
         login-username: admin            # 登录用户名
         login-password: 123    # 登录密码
         allow: 127.0.0.1                 # IP 白名单（逗号分隔）
