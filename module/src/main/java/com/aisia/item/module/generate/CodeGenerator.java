@@ -45,7 +45,7 @@ public class CodeGenerator {
                             .controller("controller")
                             .pathInfo(Collections.singletonMap(OutputFile.xml, System.getProperty("user.dir") + "/module/src/main/resources/mapper"));
                 }).strategyConfig(builder -> {
-                    builder.addInclude("file")
+                    builder.addInclude("user")
                             .entityBuilder()
                             .enableLombok() // 启用 Lombok
                             .enableTableFieldAnnotation()

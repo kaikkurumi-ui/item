@@ -1,5 +1,7 @@
 package com.aisia.item.console.controller;
 
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.digest.MD5;
 import com.aisia.item.module.enums.UploadType;
 import com.aisia.item.module.service.FileService;
 import com.aisia.item.module.utils.ImageUtil;
@@ -13,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -59,7 +62,8 @@ public class FileController {
                 if(imageDimensions == null){
                     return "图片上传失败";
                 }
-                name = String.valueOf(num) + System.currentTimeMillis() + "_" + imageDimensions[0] + "x" + imageDimensions[1] + "." + fileSuffix;
+                String md5Hex = SecureUtil.md5(String.valueOf(num) + System.currentTimeMillis());
+                name = md5Hex + "_" + imageDimensions[0] + "x" + imageDimensions[1] + "." + fileSuffix;
                 uploadPath = "D:/upload/image";
                 break;
             case "video":
@@ -116,7 +120,8 @@ public class FileController {
             if(imageDimensions == null){
                 return "图片上传失败";
             }
-            name = String.valueOf(num) + System.currentTimeMillis() + "_" + imageDimensions[0] + "x" + imageDimensions[1] + "." + fileSuffix;
+            String md5Hex = SecureUtil.md5(String.valueOf(num) + System.currentTimeMillis());
+            name = md5Hex + "_" + imageDimensions[0] + "x" + imageDimensions[1] + "." + fileSuffix;
         }else {
             name = String.format("%s%s.%s", num, System.currentTimeMillis(), fileSuffix);
         }

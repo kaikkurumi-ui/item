@@ -34,7 +34,7 @@ public class ${table.serviceImplName} {
         </#if>
     </#list>
     <#assign baseEntityTypeName = table.entityName?remove_ending("Entity")?cap_first>
-    <#assign baseEntityFieldName = table.entityName?remove_ending("Entity")>
+    <#assign baseEntityFieldName = table.entityName?remove_ending("Entity")?lower_case>
     @Autowired
     private ${baseEntityTypeName}Mapper ${baseEntityFieldName}Mapper;
 

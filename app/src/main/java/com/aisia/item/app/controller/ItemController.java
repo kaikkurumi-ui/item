@@ -1,5 +1,6 @@
 package com.aisia.item.app.controller;
 
+import cn.hutool.jwt.JWT;
 import com.aisia.item.app.domain.ImageVo;
 import com.aisia.item.app.domain.ItemDetailInfoVo;
 import com.aisia.item.app.domain.ItemInfoVo;
@@ -10,6 +11,7 @@ import com.aisia.item.module.mapper.ItemMapper;
 import com.aisia.item.module.service.CategoryService;
 import com.aisia.item.module.service.ItemService;
 import com.aisia.item.module.utils.ImageUtil;
+import com.aisia.item.module.utils.JwtUtil;
 import com.aliyun.oss.OSSException;
 import com.aliyuncs.exceptions.ClientException;
 import lombok.extern.slf4j.Slf4j;
@@ -83,8 +85,15 @@ public class ItemController {
     }
 
     @GetMapping("/info")
-    public ItemDetailInfoVo info(@RequestParam("itemId") Long itemId) {
+    public ItemDetailInfoVo info(@RequestParam("itemId") Long itemId,
+                                 @RequestParam("sign") String sign) {
         log.info("查询商品id详情:{}", itemId);
+        // 校验sign
+        String userInfo = JwtUtil.getUserIdFromSign(sign);
+        if(userInfo == null){
+            log.error("校验sign失败或者没有user_id");
+            return null;
+        }
         Item item = itemService.getById(itemId);
         ItemDetailInfoVo itemDetailInfoVo = new ItemDetailInfoVo();
 
